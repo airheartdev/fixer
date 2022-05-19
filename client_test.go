@@ -19,7 +19,7 @@ func TestNewClient(t *testing.T) {
 			t.Fatalf("c.httpClient.Timeout = %q, want %q", got, want)
 		}
 
-		if got, want := c.baseURL.String(), "http://data.fixer.io/api"; got != want {
+		if got, want := c.baseURL.String(), "https://api.apilayer.com/fixer"; got != want {
 			t.Fatalf("c.baseURL.String() = %q, want %q", got, want)
 		}
 
@@ -118,7 +118,7 @@ func TestLatest(t *testing.T) {
 			t.Fatalf("resp.Base = %q, want %q", got, want)
 		}
 
-		if got, want := resp.Date, time.Date(y, m, d, 0, 0, 0, 0, time.UTC); got != want {
+		if got, want := time.Time(resp.Date), time.Date(y, m, d, 0, 0, 0, 0, time.UTC); got != want {
 			t.Fatalf("resp.Date.Time = %v, want %v", got, want)
 		}
 	})
@@ -133,7 +133,7 @@ func TestLatest(t *testing.T) {
 			t.Fatalf("resp.Base = %q, want %q", got, want)
 		}
 
-		if got, want := resp.Date, time.Date(y, m, d, 0, 0, 0, 0, time.UTC); got != want {
+		if got, want := time.Time(resp.Date), time.Date(y, m, d, 0, 0, 0, 0, time.UTC); got != want {
 			t.Fatalf("resp.Date.Time = %v, want %v", got, want)
 		}
 
@@ -163,7 +163,7 @@ func TestAt(t *testing.T) {
 			t.Fatalf("resp.Base = %q, want %q", got, want)
 		}
 
-		if got, want := resp.Date, date; got != want {
+		if got, want := time.Time(resp.Date), date; got != want {
 			t.Fatalf("resp.Date = %v, want %v", got, want)
 		}
 	})

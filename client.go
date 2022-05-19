@@ -3,8 +3,6 @@ package fixer
 import (
 	"context"
 	"encoding/json"
-	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -39,7 +37,7 @@ func NewClient(options ...func(*Client)) *Client {
 		baseURL: &url.URL{
 			Scheme: "https",
 			Host:   "api.apilayer.com",
-			Path:   "/fixer/api",
+			Path:   "/fixer",
 		},
 		accessKey: "",
 		userAgent: "fixer/client.go (https://github.com/peterhellberg/fixer)",
@@ -173,7 +171,7 @@ func (c *Client) request(ctx context.Context, path string, query url.Values) (*h
 	req = req.WithContext(ctx)
 
 	if c.accessKey != "" {
-		req.Header.Add("apikey", c.accessKey)
+		req.Header.Add("apiKey", c.accessKey)
 	}
 
 	req.Header.Add("Accept", "application/json")
@@ -187,10 +185,10 @@ func (c *Client) do(req *http.Request) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer func() {
-		_, _ = io.CopyN(ioutil.Discard, resp.Body, 64)
-		_ = resp.Body.Close()
-	}()
+	// defer func() {
+	// 	_, _ = io.CopyN(ioutil.Discard, resp.Body, 64)
+	// 	_ = resp.Body.Close()
+	// }()
 
 	if err := responseError(resp); err != nil {
 		return nil, err

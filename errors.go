@@ -1,6 +1,10 @@
 package fixer
 
-import "net/http"
+import (
+	"fmt"
+	"io"
+	"net/http"
+)
 
 // NewError creates a new Error
 func NewError(msg string) *Error {
@@ -23,6 +27,8 @@ var (
 	ErrUnexpectedStatus    = NewError("Unexpected status")
 	ErrNotFound            = NewError(http.StatusText(http.StatusNotFound))
 	ErrUnprocessableEntity = NewError(http.StatusText(http.StatusUnprocessableEntity))
+	ErrUnauthorized        = NewError(http.StatusText(http.StatusUnauthorized))
+	ErrInternalServerError = NewError(http.StatusText(http.StatusInternalServerError))
 )
 
 func responseError(resp *http.Response) error {
@@ -35,9 +41,17 @@ func responseError(resp *http.Response) error {
 		return nil
 	case http.StatusNotFound:
 		return ErrNotFound
+	case http.StatusUnauthorized:
+		return ErrUnauthorized
 	case http.StatusUnprocessableEntity:
 		return ErrUnprocessableEntity
+	case http.StatusInternalServerError:
+		return ErrInternalServerError
 	default:
-		return ErrUnexpectedStatus
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
+		return fmt.Errorf("Response Error: %s: %s", resp.Status, string(body))
 	}
 }

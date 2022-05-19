@@ -48,9 +48,28 @@ package fixer
 
 import (
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 )
+
+type Date time.Time
+
+func (d *Date) UnmarshalJSON(data []byte) error {
+	str, err := strconv.Unquote(string(data))
+	if err != nil {
+		return err
+	}
+	t, err := time.Parse("2006-01-02", str)
+
+	if err != nil {
+		return err
+	}
+
+	*d = Date(t)
+
+	return nil
+}
 
 // Rates is the list of rates quoted against the base (EUR by default)
 type Rates map[Currency]float64
@@ -60,10 +79,10 @@ type Links map[string]string
 
 // Response data from the Foreign exchange rates and currency conversion API
 type Response struct {
-	Base  Currency  `json:"base"`
-	Date  time.Time `json:"date"`
-	Rates Rates     `json:"rates"`
-	Links Links     `json:"links,omitempty"`
+	Base  Currency `json:"base"`
+	Date  Date     `json:"date"`
+	Rates Rates    `json:"rates"`
+	Links Links    `json:"links,omitempty"`
 }
 
 // Currencies is a slice of Currency
