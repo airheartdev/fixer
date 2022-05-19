@@ -47,35 +47,10 @@ http://fixer.io/
 package fixer
 
 import (
-	"encoding/json"
 	"sort"
 	"strings"
 	"time"
 )
-
-// Date wraps time.Time
-type Date struct {
-	time.Time
-}
-
-// UnmarshalJSON parses dates in YYYY-MM-DD format
-func (d *Date) UnmarshalJSON(b []byte) error {
-	var value string
-
-	err := json.Unmarshal(b, &value)
-	if err != nil {
-		return err
-	}
-
-	t, err := time.ParseInLocation("2006-01-02", value, time.UTC)
-	if err != nil {
-		return err
-	}
-
-	*d = Date{t}
-
-	return nil
-}
 
 // Rates is the list of rates quoted against the base (EUR by default)
 type Rates map[Currency]float64
@@ -85,10 +60,10 @@ type Links map[string]string
 
 // Response data from the Foreign exchange rates and currency conversion API
 type Response struct {
-	Base  Currency `json:"base"`
-	Date  Date     `json:"date"`
-	Rates Rates    `json:"rates"`
-	Links Links    `json:"links,omitempty"`
+	Base  Currency  `json:"base"`
+	Date  time.Time `json:"date"`
+	Rates Rates     `json:"rates"`
+	Links Links     `json:"links,omitempty"`
 }
 
 // Currencies is a slice of Currency

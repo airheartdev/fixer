@@ -118,7 +118,7 @@ func TestLatest(t *testing.T) {
 			t.Fatalf("resp.Base = %q, want %q", got, want)
 		}
 
-		if got, want := resp.Date.Time, time.Date(y, m, d, 0, 0, 0, 0, time.UTC); got != want {
+		if got, want := resp.Date, time.Date(y, m, d, 0, 0, 0, 0, time.UTC); got != want {
 			t.Fatalf("resp.Date.Time = %v, want %v", got, want)
 		}
 	})
@@ -133,7 +133,7 @@ func TestLatest(t *testing.T) {
 			t.Fatalf("resp.Base = %q, want %q", got, want)
 		}
 
-		if got, want := resp.Date.Time, time.Date(y, m, d, 0, 0, 0, 0, time.UTC); got != want {
+		if got, want := resp.Date, time.Date(y, m, d, 0, 0, 0, 0, time.UTC); got != want {
 			t.Fatalf("resp.Date.Time = %v, want %v", got, want)
 		}
 
@@ -154,7 +154,7 @@ func TestAt(t *testing.T) {
 	t.Run("2012-03-28", func(t *testing.T) {
 		date := time.Date(2012, 3, 28, 0, 0, 0, 0, time.UTC)
 
-		resp, err := c.At(context.Background(), date)
+		resp, err := c.At(context.TODO(), date)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -163,8 +163,8 @@ func TestAt(t *testing.T) {
 			t.Fatalf("resp.Base = %q, want %q", got, want)
 		}
 
-		if got, want := resp.Date.Time, date; got != want {
-			t.Fatalf("resp.Date.Time = %v, want %v", got, want)
+		if got, want := resp.Date, date; got != want {
+			t.Fatalf("resp.Date = %v, want %v", got, want)
 		}
 	})
 

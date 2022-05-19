@@ -20,6 +20,8 @@ var ExratesClient = NewClient(BaseURL("https://api.exchangeratesapi.io"))
 // DefaultClient is the default client for the Foreign exchange rates and currency conversion API
 var DefaultClient = FixerClient
 
+const DateFormat = "2006-01-02"
+
 // Client for the Foreign exchange rates and currency conversion API
 type Client struct {
 	httpClient *http.Client
@@ -35,9 +37,9 @@ func NewClient(options ...func(*Client)) *Client {
 			Timeout: 20 * time.Second,
 		},
 		baseURL: &url.URL{
-			Scheme: "http",
-			Host:   "data.fixer.io",
-			Path:   "/api",
+			Scheme: "https",
+			Host:   "api.apilayer.com",
+			Path:   "/fixer/api",
 		},
 		accessKey: "",
 		userAgent: "fixer/client.go (https://github.com/peterhellberg/fixer)",
@@ -113,7 +115,7 @@ func (c *Client) At(ctx context.Context, t time.Time, attributes ...url.Values) 
 }
 
 func (c *Client) date(t time.Time) string {
-	return t.Format("2006-01-02")
+	return t.Format(DateFormat)
 }
 
 func (c *Client) get(ctx context.Context, path string, query url.Values) (*Response, error) {
@@ -154,10 +156,6 @@ func (c *Client) query(attributes []url.Values) url.Values {
 func (c *Client) request(ctx context.Context, path string, query url.Values) (*http.Request, error) {
 	rawurl := c.baseURL.Path + path
 
-	if c.accessKey != "" {
-		query.Set("access_key", c.accessKey)
-	}
-
 	if len(query) > 0 {
 		rawurl += "?" + query.Encode()
 	}
@@ -173,6 +171,10 @@ func (c *Client) request(ctx context.Context, path string, query url.Values) (*h
 	}
 
 	req = req.WithContext(ctx)
+
+	if c.accessKey != "" {
+		req.Header.Add("apikey", c.accessKey)
+	}
 
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("User-Agent", c.userAgent)
