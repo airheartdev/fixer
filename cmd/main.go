@@ -2,14 +2,16 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"time"
 
 	"github.com/airheartdev/fixer"
 )
 
 func main() {
 	fxClient := fixer.NewClient(
-		fixer.AccessKey("BQYyyb0xO1b72OX8NivRjTpyq41XhK5z"),
+		fixer.AccessKey("your-access-key"),
 	)
 
 	ctx := context.Background()
@@ -34,5 +36,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Printf("%+v", resp)
+	for cur, rate := range resp.Rates {
+		fmt.Printf("%s: %f\n", cur, rate)
+	}
+
+	fmt.Printf("\nCurrent at: %s\n", time.Time(resp.Date).Format(time.Stamp))
 }
